@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WISC-5 臨床アドバイザー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f4ef;
+    --cream: #ede8df;
+    --accent: #c85a2f;
+    --accent2: #3a7d6b;
+    --muted: #7a7468;
+    --border: #d4cec4;
+    --warn: #b8860b;
+    --low: #8b3a3a;
+    --avg: #3a5f8b;
+    --high: #3a7d3a;
+    --card-bg: #faf8f4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif JP', serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 40px 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  header span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: #aaa;
+    letter-spacing: 0.1em;
+  }
+
+  .main-wrap {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: calc(100vh - 73px);
+  }
+
+  /* ===== LEFT PANEL ===== */
+  .input-panel {
+    background: var(--cream);
+    border-right: 2px solid var(--border);
+    padding: 28px 28px 40px;
+    overflow-y: auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 24px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label:first-of-type { margin-top: 0; }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .field-row label {
+    flex: 1;
+    font-size: 0.82rem;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .field-row .abbr {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  input[type="number"], input[type="text"], select {
+    width: 72px;
+    padding: 6px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--ink);
+    text-align: center;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+  }
+
+  input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .age-wrap { display: flex; gap: 8px; align-items: center; }
+  .age-wrap label { font-size: 0.82rem; }
+  .age-wrap input { width: 56px; }
+
+  .index-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .index-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .index-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .dot-vci { background: #5b8dd9; }
+  .dot-vsi { background: #e07b39; }
+  .dot-fri { background: #5cb85c; }
+  .dot-wmi { background: #9b59b6; }
+  .dot-psi { background: #e74c3c; }
+  .dot-fsiq { background: var(--ink); }
+
+  .score-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .score-bar-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .score-input-main {
+    width: 68px !important;
+  }
+
+  .score-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .btn-analyze {
+    width: 100%;
+    margin-top: 22px;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-analyze:hover { background: #a8451f; }
+  .btn-analyze:active { transform: scale(0.98); }
+
+  .btn-clear {
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px;
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-clear:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ===== RIGHT PANEL ===== */
+  .output-panel {
+    padding: 36px 40px 60px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    color: var(--muted);
+    text-align: center;
+    gap: 12px;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    opacity: 0.3;
+  }
+
+  .empty-state p { font-size: 0.9rem; opacity: 0.7; }
+
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    gap: 16px;
+  }
+
+  .loading-dots {
+    display: flex; gap: 8px;
+  }
+
+  .loading-dots span {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; background: var(--accent2); }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; background: var(--warn); }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40% { transform: translateY(-12px); opacity: 1; }
+  }
+
+  .loading-wrap p { font-size: 0.85rem; color: var(--muted); }
+
+  /* Result sections */
+  .result-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .result-patient {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .result-patient strong {
+    font-size: 1.1rem;
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+    font-family: 'Fraunces', serif;
+  }
+
+  .result-timestamp {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  /* Score visual */
+  .scores-visual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .score-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card.fsiq-card {
+    grid-column: span 3;
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .score-card-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .fsiq-card .score-card-name { color: #aaa; }
+
+  .score-card-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .score-card-label {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+
+  .score-bar-visual {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  /* Classification colors */
+  .cls-very-high { color: #2d6e2d; }
+  .cls-high { color: #4a8a4a; }
+  .cls-avg-high { color: #3a7d6b; }
+  .cls-avg { color: #3a5f8b; }
+  .cls-avg-low { color: #b8860b; }
+  .cls-low { color: #c85a2f; }
+  .cls-very-low { color: #8b3a3a; }
+  .cls-na { color: var(--muted); }
+
+  .bar-very-high { background: #2d6e2d; }
+  .bar-high { background: #4a8a4a; }
+  .bar-avg-high { background: #3a7d6b; }
+  .bar-avg { background: #3a5f8b; }
+  .bar-avg-low { background: #b8860b; }
+  .bar-low { background: #c85a2f; }
+  .bar-very-low { background: #8b3a3a; }
+
+  /* Content blocks */
+  .content-section {
+    margin-bottom: 28px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .content-section h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .content-section h3 .icon { font-size: 1rem; }
+
+  .prose {
+    font-size: 0.88rem;
+    line-height: 1.85;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid;
+  }
+
+  .tag-strength {
+    color: var(--accent2);
+    border-color: var(--accent2);
+    background: rgba(58,125,107,0.07);
+  }
+
+  .tag-weakness {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(200,90,47,0.07);
+  }
+
+  .support-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .support-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+
+  .support-card h4 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .support-card ul {
+    list-style: none;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #333;
+  }
+
+  .support-card ul li::before {
+    content: "▸ ";
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  .disclaimer {
+    margin-top: 32px;
+    padding: 12px 16px;
+    background: #fff8e8;
+    border-left: 3px solid var(--warn);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.76rem;
+    color: var(--warn);
+    line-height: 1.6;
+  }
+
+  .btn-print {
+    position: fixed;
+    bottom: 28px;
+    right: 32px;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: background 0.2s;
+    display: none;
+  }
+
+  .btn-print:hover { background: var(--accent); }
+
+  /* Dispersion warning */
+  .dispersion-alert {
+    background: #fff3f0;
+    border: 1.5px solid #f0a090;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.81rem;
+    color: #8b3a2a;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  /* Accordion */
+  .accordion-item {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    background: var(--card-bg);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    gap: 10px;
+  }
+
+  .accordion-header:hover { background: var(--cream); }
+
+  .accordion-header.open { background: var(--ink); color: white; }
+  .accordion-header.open .acc-icon { color: white; }
+  .accordion-header.open .acc-arrow { color: white; transform: rotate(180deg); }
+
+  .acc-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .acc-icon { font-size: 1rem; }
+
+  .acc-arrow {
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.25s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .accordion-body {
+    display: none;
+    padding: 16px 18px;
+    background: white;
+    border-top: 1px solid var(--border);
+  }
+
+  .accordion-body.open { display: block; }
+
+  @media print {
+    .input-panel, .btn-analyze, .btn-clear, .btn-print, header { display: none !important; }
+    .main-wrap { grid-template-columns: 1fr; }
+    .output-panel { padding: 20px; }
+    .accordion-body { display: block !important; }
+    .acc-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>WISC-5 臨床アドバイザー</h1>
+  <span>PEDIATRIC COGNITIVE ASSESSMENT TOOL</span>
+</header>
+
+<div class="main-wrap">
+  <!-- LEFT: INPUT -->
+  <div class="input-panel" id="inputPanel">
+
+    <div class="section-label">基本情報</div>
+    <div class="age-wrap" style="margin-bottom:4px;">
+      <label>年齢</label>
+      <input type="number" id="ageY" min="6" max="16" placeholder="歳" style="width:56px">
+      <label>歳</label>
+      <input type="number" id="ageM" min="0" max="11" placeholder="ヶ月" style="width:60px">
+      <label>ヶ月</label>
+    </div>
+    <div style="margin-top:10px; margin-bottom:4px;">
+      <label class="field-row" style="font-size:0.82rem; gap:10px;">
+        <span style="flex:1;">学年</span>
+        <select id="grade" style="width:140px; text-align:left;">
+          <option value="">選択</option>
+          <option value="年長">年長（幼稚園）</option>
+          <option value="小1">小学1年</option>
+          <option value="小2">小学2年</option>
+          <option value="小3">小学3年</option>
+          <option value="小4">小学4年</option>
+          <option value="小5">小学5年</option>
+          <option value="小6">小学6年</option>
+          <option value="中1">中学1年</option>
+          <option value="中2">中学2年</option>
+          <option value="中3">中学3年</option>
+        </select>
+      </label>
+    </div>
+    <div style="margin-top:10px;">
+      <label class="field-row" style="font-size:0.82rem; gap:10px;">
+        <span style="flex:1;">主訴・受診理由</span>
+        <select id="complaint" style="width:140px; text-align:left;">
+          <option value="">選択</option>
+          <option value="学習困難">学習困難</option>
+          <option value="注意・多動">注意・多動</option>
+          <option value="コミュニケーション困難">コミュニケーション困難</option>
+          <option value="行動問題">行動問題</option>
+          <option value="発達フォロー">発達フォロー</option>
+          <option value="進学・就学相談">進学・就学相談</option>
+          <option value="その他">その他</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">全検査IQ</div>
+    <div class="index-block">
+      <div class="index-title">
+        <span class="index-dot dot-fsiq"></span>
+        FSIQ（全検査IQ）
+      </div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">スコア</span>
+        <input type="number" id="fsiq" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-fsiq">—</span>
+      </div>
+    </div>
+
+    <div class="section-label">主要5指標</div>
+
+    <div class="index-block">
+      <div class="index-title"><span class="index-dot dot-vci"></span>言語理解指標（VCI）</div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">合成スコア</span>
+        <input type="number" id="vci" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-vci">—</span>
+      </div>
+    </div>
+
+    <div class="index-block">
+      <div class="index-title"><span class="index-dot dot-vsi"></span>視空間指標（VSI）</div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">合成スコア</span>
+        <input type="number" id="vsi" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-vsi">—</span>
+      </div>
+    </div>
+
+    <div class="index-block">
+      <div class="index-title"><span class="index-dot dot-fri"></span>流動性推理指標（FRI）</div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">合成スコア</span>
+        <input type="number" id="fri" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-fri">—</span>
+      </div>
+    </div>
+
+    <div class="index-block">
+      <div class="index-title"><span class="index-dot dot-wmi"></span>ワーキングメモリー指標（WMI）</div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">合成スコア</span>
+        <input type="number" id="wmi" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-wmi">—</span>
+      </div>
+    </div>
+
+    <div class="index-block">
+      <div class="index-title"><span class="index-dot dot-psi"></span>処理速度指標（PSI）</div>
+      <div class="score-bar-wrap">
+        <span class="score-bar-label">合成スコア</span>
+        <input type="number" id="psi" class="score-input-main" min="40" max="160" placeholder="—">
+        <span class="score-badge" id="badge-psi">—</span>
+      </div>
+    </div>
+
+    <div class="section-label">補足（任意）</div>
+    <textarea id="memo" placeholder="特記事項・他の検査結果・環境要因など" style="width:100%;height:68px;padding:8px;border:1.5px solid var(--border);border-radius:4px;font-family:Noto Serif JP,serif;font-size:0.8rem;resize:vertical;background:#fff;color:var(--ink);"></textarea>
+
+    <div class="section-label" style="margin-top:20px;">API設定</div>
+    <div style="margin-bottom:4px;">
+      <input type="password" id="apiKey" placeholder="sk-ant-..." style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:4px;font-family:DM Mono,monospace;font-size:0.8rem;background:#fff;color:var(--ink);">
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:4px;">console.anthropic.com で取得したAPIキー</div>
+    </div>
+
+    <button class="btn-analyze" onclick="analyze()">▶ 評価・対策を生成</button>
+    <button class="btn-clear" onclick="clearAll()">クリア</button>
+  </div>
+
+  <!-- RIGHT: OUTPUT -->
+  <div class="output-panel" id="outputPanel">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🧠</div>
+      <p>左パネルにスコアを入力して<br>「評価・対策を生成」をクリック</p>
+    </div>
+    <div id="loadingState" style="display:none;">
+      <div class="loading-wrap">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <p>Claude が評価を生成中...</p>
+      </div>
+    </div>
+    <div id="resultState" style="display:none;"></div>
+  </div>
+</div>
+
+<button class="btn-print" id="printBtn" onclick="window.print()">印刷 / PDF保存</button>
+
+<script>
+const CLASSIFICATIONS = [
+  { min: 130, label: '非常に高い', cls: 'cls-very-high', bar: 'bar-very-high', bg: '#e8f5e8' },
+  { min: 120, label: '高い',       cls: 'cls-high',      bar: 'bar-high',      bg: '#f0f7f0' },
+  { min: 110, label: '平均の上',   cls: 'cls-avg-high',  bar: 'bar-avg-high',  bg: '#e8f3f1' },
+  { min: 90,  label: '平均',       cls: 'cls-avg',       bar: 'bar-avg',       bg: '#e8eef7' },
+  { min: 80,  label: '平均の下',   cls: 'cls-avg-low',   bar: 'bar-avg-low',   bg: '#fdf6e3' },
+  { min: 70,  label: '低い',       cls: 'cls-low',       bar: 'bar-low',       bg: '#fdf0ec' },
+  { min: 0,   label: '非常に低い', cls: 'cls-very-low',  bar: 'bar-very-low',  bg: '#fae8e8' },
+];
+
+function classify(score) {
+  if (!score || isNaN(score)) return null;
+  return CLASSIFICATIONS.find(c => score >= c.min);
+}
+
+function scoreToBarPct(score) {
+  // 40-160 → 0-100%
+  return Math.max(0, Math.min(100, ((score - 40) / 120) * 100));
+}
+
+// Live badge update
+['fsiq','vci','vsi','fri','wmi','psi'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => updateBadge(id));
+});
+
+function updateBadge(id) {
+  const val = parseInt(document.getElementById(id).value);
+  const badge = document.getElementById('badge-' + id);
+  const cls = classify(val);
+  if (!cls || !val) {
+    badge.textContent = '—';
+    badge.style.cssText = '';
+    return;
+  }
+  badge.textContent = cls.label;
+  badge.className = 'score-badge ' + cls.cls;
+  badge.style.background = cls.bg;
+  badge.style.border = '1px solid currentColor';
+}
+
+function clearAll() {
+  ['fsiq','vci','vsi','fri','wmi','psi'].forEach(id => {
+    document.getElementById(id).value = '';
+    updateBadge(id);
+  });
+  document.getElementById('ageY').value = '';
+  document.getElementById('ageM').value = '';
+  document.getElementById('grade').value = '';
+  document.getElementById('complaint').value = '';
+  document.getElementById('memo').value = '';
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('resultState').style.display = 'none';
+  document.getElementById('printBtn').style.display = 'none';
+}
+
+async function analyze() {
+  const ageY = document.getElementById('ageY').value;
+  const ageM = document.getElementById('ageM').value;
+  const grade = document.getElementById('grade').value;
+  const complaint = document.getElementById('complaint').value;
+  const memo = document.getElementById('memo').value;
+
+  const scores = {
+    FSIQ: parseInt(document.getElementById('fsiq').value) || null,
+    VCI: parseInt(document.getElementById('vci').value) || null,
+    VSI: parseInt(document.getElementById('vsi').value) || null,
+    FRI: parseInt(document.getElementById('fri').value) || null,
+    WMI: parseInt(document.getElementById('wmi').value) || null,
+    PSI: parseInt(document.getElementById('psi').value) || null,
+  };
+
+  const validScores = Object.values(scores).filter(v => v !== null);
+  if (validScores.length === 0) {
+    alert('スコアを少なくとも1つ入力してください');
+    return;
+  }
+
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) {
+    alert('APIキーを入力してください');
+    return;
+  }
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultState').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'flex';
+
+  // Build prompt
+  const scoreLines = Object.entries(scores)
+    .filter(([,v]) => v !== null)
+    .map(([k,v]) => {
+      const cls = classify(v);
+      return `${k}: ${v}（${cls ? cls.label : '?'}）`;
+    }).join('\n');
+
+  const ageStr = ageY ? `${ageY}歳${ageM ? ageM+'ヶ月' : ''}` : '（年齢未入力）';
+  const gradeStr = grade || '（学年未入力）';
+  const complaintStr = complaint || '（主訴未入力）';
+
+  // Index dispersion check
+  const indexVals = [scores.VCI, scores.VSI, scores.FRI, scores.WMI, scores.PSI].filter(v=>v!==null);
+  let maxDisp = 0;
+  if (indexVals.length >= 2) {
+    maxDisp = Math.max(...indexVals) - Math.min(...indexVals);
+  }
+
+  const prompt = `あなたは小児神経発達専門の臨床心理士・小児科医向けのWISC-5解釈AIです。
+出力はすべて日本語のみで記述してください。英語・ローマ字・英略語は一切使わないでください。
+指標名も「言語理解」「視空間」「流動性推理」「ワーキングメモリー」「処理速度」「全検査ＩＱ」と日本語で表記してください。
+
+以下のWISC-5の結果について、小児科医が保護者と学校に伝えるための実用的な評価と対策を作成してください。
+
+【対象児】
+- 年齢: ${ageStr}
+- 学年: ${gradeStr}
+- 主訴: ${complaintStr}
+- 特記: ${memo || 'なし'}
+
+【WISC-5スコア】
+${scoreLines}
+- 指標間の最大差: ${maxDisp > 0 ? maxDisp + '点' : '算出不可'}
+
+以下の構造でJSONのみ返してください。マークダウン記号・コードブロック・英語・ローマ字は一切含めないこと：
+{
+  "overview": "全体的な認知プロフィールの臨床的解釈（3〜5文、医師向け専門的な内容、すべて日本語）",
+  "strengths": ["強みとなる認知機能を3〜5項目、すべて日本語で"],
+  "weaknesses": ["支援が必要な認知機能を3〜5項目、すべて日本語で"],
+  "clinical_notes": "注意欠如多動症・学習障害・自閉スペクトラム症等の可能性・除外すべき鑑別・追加評価の提案など（2〜4文、すべて日本語）",
+  "school_support": {
+    "classroom": ["授業での具体的配慮3〜5項目、すべて日本語で"],
+    "test_accommodation": ["テスト・評価時の配慮3〜4項目、すべて日本語で"],
+    "learning_strategies": ["効果的な学習方法・ツール3〜5項目、すべて日本語で"],
+    "teacher_collab": ["担任・学校への具体的依頼事項3〜4項目、すべて日本語で"]
+  },
+  "parent_message": "保護者への説明文（200字程度、平易な言葉で、お子さんの強みも含めた前向きな内容、すべて日本語）",
+  "priority_actions": ["今後6ヶ月以内に取り組む優先事項3〜4項目、すべて日本語で"]
+}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        system: "あなたは日本語専用のWISC-5解釈アシスタントです。すべての回答を日本語のみで記述し、英語・ローマ字・英略語は一切使用しないでください。",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content.map(i => i.text || "").join("");
+
+    let result;
+    try {
+      const clean = text.replace(/```json|```/g, '').trim();
+      result = JSON.parse(clean);
+    } catch(e) {
+      result = { overview: text, strengths: [], weaknesses: [], school_support: {}, parent_message: '', priority_actions: [], clinical_notes: '' };
+    }
+
+    renderResult(scores, ageStr, gradeStr, complaintStr, result, maxDisp);
+
+  } catch(err) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('resultState').innerHTML = `<div style="color:var(--accent);padding:20px;">エラーが発生しました: ${err.message}</div>`;
+    document.getElementById('resultState').style.display = 'block';
+  }
+}
+
+function renderResult(scores, ageStr, gradeStr, complaint, r, maxDisp) {
+  document.getElementById('loadingState').style.display = 'none';
+
+  const indexNames = {
+    FSIQ: '全検査IQ', VCI: '言語理解', VSI: '視空間', FRI: '流動性推理', WMI: 'WM', PSI: '処理速度'
+  };
+  const dotClass = { FSIQ:'dot-fsiq', VCI:'dot-vci', VSI:'dot-vsi', FRI:'dot-fri', WMI:'dot-wmi', PSI:'dot-psi' };
+
+  // Score cards
+  let cardsHtml = '';
+  const order = ['VCI','VSI','FRI','WMI','PSI'];
+  order.forEach(key => {
+    if (scores[key] === null) return;
+    const cls = classify(scores[key]);
+    const pct = scoreToBarPct(scores[key]);
+    cardsHtml += `
+    <div class="score-card">
+      <div class="score-card-name"><span class="index-dot ${dotClass[key]}" style="display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;"></span>${key} ${indexNames[key]}</div>
+      <div class="score-card-value ${cls ? cls.cls : 'cls-na'}">${scores[key]}</div>
+      <div class="score-card-label ${cls ? cls.cls : 'cls-na'}" style="background:${cls?cls.bg:'#f0f0f0'};border:1px solid currentColor;">${cls ? cls.label : '—'}</div>
+      <div class="score-bar-visual"><div class="score-bar-fill ${cls ? cls.bar : ''}" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+
+  // FSIQ card
+  let fsiqCard = '';
+  if (scores.FSIQ) {
+    const cls = classify(scores.FSIQ);
+    fsiqCard = `
+    <div class="score-card fsiq-card">
+      <div class="score-card-name">FSIQ 全検査IQ</div>
+      <div class="score-card-value" style="font-size:2.4rem;">${scores.FSIQ}</div>
+      <div class="score-card-label" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:white;">${cls ? cls.label : '—'}</div>
+    </div>`;
+  }
+
+  // Dispersion alert
+  let dispAlert = '';
+  if (maxDisp >= 23) {
+    dispAlert = `<div class="dispersion-alert">⚠️ 指標間の最大差 <strong>${maxDisp}点</strong> — FSIQの代表性が低い可能性。個別の指標プロフィール重視を推奨。</div>`;
+  }
+
+  // School support grid
+  const ss = r.school_support || {};
+  const supportCards = [
+    { key:'classroom', icon:'🏫', title:'授業での配慮', items: ss.classroom },
+    { key:'test_accommodation', icon:'📝', title:'テスト・評価', items: ss.test_accommodation },
+    { key:'learning_strategies', icon:'💡', title:'学習方法・ツール', items: ss.learning_strategies },
+    { key:'teacher_collab', icon:'🤝', title:'学校への依頼事項', items: ss.teacher_collab },
+  ].filter(c => c.items && c.items.length > 0);
+
+  let supportHtml = '<div class="support-grid">';
+  supportCards.forEach(c => {
+    supportHtml += `<div class="support-card">
+      <h4>${c.icon} ${c.title}</h4>
+      <ul>${c.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>`;
+  });
+  supportHtml += '</div>';
+
+  const accItem = (icon, title, bodyHtml, openDefault=false) => `
+    <div class="accordion-item">
+      <div class="accordion-header ${openDefault?'open':''}" onclick="toggleAcc(this)">
+        <div class="acc-title"><span class="acc-icon">${icon}</span>${title}</div>
+        <span class="acc-arrow">${openDefault?'▲':'▼'}</span>
+      </div>
+      <div class="accordion-body ${openDefault?'open':''}">${bodyHtml}</div>
+    </div>`;
+
+  const strengthsBody = `
+    ${r.strengths && r.strengths.length ? '<div style="margin-bottom:8px;font-size:0.8rem;color:var(--muted);">強み</div><div class="tag-list">' + r.strengths.map(s=>`<span class="tag tag-strength">▲ ${s}</span>`).join('') + '</div>' : '<p style="color:var(--muted);font-size:0.85rem;">データなし</p>'}
+    ${r.weaknesses && r.weaknesses.length ? '<div style="margin-top:14px;margin-bottom:8px;font-size:0.8rem;color:var(--muted);">支援ポイント</div><div class="tag-list">' + r.weaknesses.map(s=>`<span class="tag tag-weakness">▽ ${s}</span>`).join('') + '</div>' : ''}`;
+
+  const schoolBody = supportHtml;
+
+  const priorityBody = r.priority_actions && r.priority_actions.length
+    ? `<ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">${r.priority_actions.map((a,i)=>`<li style="display:flex;gap:10px;align-items:flex-start;font-size:0.85rem;"><span style="font-family:DM Mono,monospace;font-size:0.7rem;background:var(--ink);color:white;padding:2px 7px;border-radius:10px;flex-shrink:0;margin-top:2px;">0${i+1}</span><span>${a}</span></li>`).join('')}</ul>`
+    : '<p style="color:var(--muted);font-size:0.85rem;">データなし</p>';
+
+  const parentBody = r.parent_message
+    ? `<div style="font-size:0.86rem;line-height:1.9;color:var(--ink);">${r.parent_message}</div>`
+    : '<p style="color:var(--muted);font-size:0.85rem;">データなし</p>';
+
+  const clinicalBody = r.clinical_notes
+    ? `<div class="prose">${r.clinical_notes}</div>`
+    : '<p style="color:var(--muted);font-size:0.85rem;">データなし</p>';
+
+  const html = `
+    <div class="result-header">
+      <div class="result-patient">
+        <strong>${ageStr}・${gradeStr}</strong>
+        主訴：${complaint}
+      </div>
+      <div class="result-timestamp">${new Date().toLocaleString('ja-JP')}</div>
+    </div>
+
+    ${dispAlert}
+
+    <div class="scores-visual">${fsiqCard}${cardsHtml}</div>
+
+    ${accItem('🔬', '臨床的プロフィール概要', `<div class="prose">${r.overview || '—'}</div>`, true)}
+    ${accItem('✦', '認知的強みと課題', strengthsBody, true)}
+    ${accItem('⚕', '臨床上の注意点・鑑別', clinicalBody, false)}
+    ${accItem('🏫', '学校での具体的支援策', schoolBody, false)}
+    ${accItem('📌', '優先アクション（今後6ヶ月）', priorityBody, false)}
+    ${accItem('💬', '保護者説明文（案）', parentBody, false)}
+
+    <div class="disclaimer">
+      ※ この評価はAIによる補助情報です。診断・教育措置は必ず臨床心理士・医師の総合判断に基づいて行ってください。スコアの解釈は最新のWISC-5マニュアルおよび検査者の専門的判断を優先してください。
+    </div>
+  `;
+
+  const rs = document.getElementById('resultState');
+  rs.innerHTML = html;
+  rs.style.display = 'block';
+  document.getElementById('printBtn').style.display = 'block';
+}
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+  header.querySelector('.acc-arrow').textContent = isOpen ? '▼' : '▲';
+}
+</script>
+</body>
+</html>
